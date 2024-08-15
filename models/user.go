@@ -2,13 +2,13 @@ package models
 
 import (
 	"errors"
-
+     "fmt"
 	"github.com/Jane-Mwangi/GoEventApi/db"
 	"github.com/Jane-Mwangi/GoEventApi/utils"
 )
 
 type User struct {
-	ID       int64
+	ID       int64  `json:"id"`
 	Email    string `binding:"required"`
 	Password string `binding:"required" `
 }

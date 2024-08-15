@@ -1,6 +1,7 @@
 package routes
 
 import (
+	"go/token"
 	"net/http"
 	"strconv"
 
@@ -9,6 +10,12 @@ import (
 )
 
 func getEvents(context *gin.Context) {
+	token:=context.Request.Header.Get( "Authorization")
+
+	if token==""{
+		context.JSON(http.StatusUnauthorized, gin.H{"message": "Unauthorized Access"})
+		return
+	}
 
 	events, err := models.GetAllEvents()
 	if err != nil {
