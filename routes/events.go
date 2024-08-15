@@ -1,21 +1,16 @@
 package routes
 
 import (
-	"go/token"
+
 	"net/http"
 	"strconv"
 
 	"github.com/Jane-Mwangi/GoEventApi/models"
+	"github.com/Jane-Mwangi/GoEventApi/utils"
 	"github.com/gin-gonic/gin"
 )
 
 func getEvents(context *gin.Context) {
-	token:=context.Request.Header.Get( "Authorization")
-
-	if token==""{
-		context.JSON(http.StatusUnauthorized, gin.H{"message": "Unauthorized Access"})
-		return
-	}
 
 	events, err := models.GetAllEvents()
 	if err != nil {
@@ -36,15 +31,30 @@ func getEvent(context *gin.Context) {
 	event, err := models.GetEvent(eventId)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"message": "Could not fetch event.Try Again Later", "error": err.Error()})
-		return	
+		return
 	}
 	context.JSON(http.StatusOK, event)
 
 }
 
 func createEvent(context *gin.Context) {
+
+	token := context.Request.Header.Get("Authorization")
+
+	if token == "" {
+		context.JSON(http.StatusUnauthorized, gin.H{"message": "Unauthorized Access"})
+		return
+	}
+
+	err:=utils.VerifyToken(token)
+
+	if err!=nil{
+		context.JSON(http.StatusUnauthorized, gin.H{"message": "Unauthorized Access"})
+		return
+	}
+
 	var event models.Event
-	err := context.ShouldBindJSON(&event)
+	err = context.ShouldBindJSON(&event)
 
 	if err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"message": "Could not parse request data.", "error": err.Error()})
@@ -69,7 +79,7 @@ func updateEvent(context *gin.Context) {
 		return
 	}
 
-	_,err= models.GetEvent(eventId)
+	_, err = models.GetEvent(eventId)
 
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"message": "Could not fetch event.Try Again Later", "error": err.Error()})
@@ -81,9 +91,9 @@ func updateEvent(context *gin.Context) {
 	if err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"message": "Could not parse request data.", "error": err.Error()})
 		return
-	}	
+	}
 	updateEvent.ID = eventId
-	err=updateEvent.Update()
+	err = updateEvent.Update()
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"message": "Could not update event.Try Again Later", "error": err.Error()})
 		return
@@ -99,7 +109,7 @@ func deleteEvent(context *gin.Context) {
 		return
 	}
 
-	event,err:= models.GetEvent(eventId)
+	event, err := models.GetEvent(eventId)
 
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"message": "Could not fetch event.Try Again Later", "error": err.Error()})
@@ -113,4 +123,3 @@ func deleteEvent(context *gin.Context) {
 	}
 	context.JSON(http.StatusOK, gin.H{"message": "Event Deleted Successfully", "event": event})
 }
-
