@@ -1,0 +1,7 @@
+POST http://localhost:8080/login
+Content-Type: application/json
+
+{
+    "email": "test0@gmail.com",
+    "password": "test"
+}
