@@ -5,7 +5,6 @@ import (
 	"strconv"
 
 	"github.com/Jane-Mwangi/GoEventApi/models"
-	"github.com/Jane-Mwangi/GoEventApi/utils"
 	"github.com/gin-gonic/gin"
 )
 
@@ -47,7 +46,6 @@ func createEvent(context *gin.Context) {
 	}
 	userId := context.GetInt64("userId")
 	event.ID = userId
-	event.UserID = 1
 
 	err = event.Save()
 	if err != nil {
