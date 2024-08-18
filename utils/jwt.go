@@ -9,52 +9,44 @@ import (
 
 const secretKey = "supersecret"
 
+// GenerateToken creates a new JWT token with the provided email and userId
 func GenerateToken(email string, userId int64) (string, error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"email": email, // Use string literals for the keys
-		//never include sensitive information in the token e.g passwords
+		"email": email,
 		"userId": userId,
-		//expriration time
 		"exp": time.Now().Add(time.Hour * 2).Unix(), // Expiration time
 	})
 
-	return token.SignedString([]byte(secretKey)) // Use the secretKey constant
+	return token.SignedString([]byte(secretKey))
 }
 
-func VerifyToken(token string)(int64, error ){
-	parsedToken, err := jwt.Parse(token, func(token *jwt.Token) (interface{}, error) {
+// VerifyToken parses and validates the JWT token, extracting the userId
+func VerifyToken(tokenStr string) (int64, error) {
+	parsedToken, err := jwt.Parse(tokenStr, func(token *jwt.Token) (interface{}, error) {
 		_, ok := token.Method.(*jwt.SigningMethodHMAC)
-
 		if !ok {
-			return nil, errors.New("Invalid signing method")
+			return nil, errors.New("unexpected signing method")
 		}
 		return []byte(secretKey), nil
-
 	})
 
 	if err != nil {
-		return 0, errors.New("could not parse token")
-
-	}
-	tokenIsValid := parsedToken.Valid
-
-	if !tokenIsValid {
-		return 0,errors.New("Token is not valid")
+		return 0, err
 	}
 
-	claims,ok:=parsedToken.Claims.(jwt.MapClaims)
-
-	if !ok{
-		return 0, errors.New("Invalid	id token claims")
+	if !parsedToken.Valid {
+		return 0, errors.New("invalid token")
 	}
 
-	// email:=claims["email"].(string)
+	claims, ok := parsedToken.Claims.(jwt.MapClaims)
+	if !ok {
+		return 0, errors.New("invalid token claims")
+	}
+
 	userIdFloat, ok := claims["userId"].(float64)
-    if !ok {
-        return 0, errors.New("userId is not a valid float64")
-    }
+	if !ok {
+		return 0, errors.New("invalid userId claim")
+	}
 
-    userId := int64(userIdFloat)
-	return  userId,nil
-
+	return int64(userIdFloat), nil
 }

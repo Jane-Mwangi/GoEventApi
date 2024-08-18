@@ -4,7 +4,6 @@ import (
 	"time"
 
 	"github.com/Jane-Mwangi/GoEventApi/db"
-	
 )
 
 type Event struct {
@@ -13,7 +12,7 @@ type Event struct {
 	Description string    ` binding:"required"`
 	Location    string    ` binding:"required"`
 	DateTime    time.Time ` binding:"required"`
-	UserID      int64
+	UserID      int64     `json:"user_id"`
 }
 
 var events = []Event{}
@@ -73,9 +72,9 @@ func GetEvent(id int64) (*Event, error) {
 	}
 
 	return &event, nil
-}  
+}
 
-func  (event Event)Update() error{
+func (event Event) Update() error {
 	query := `
 	UPDATE events
 	SET name = ?,description = ?,location = ?,dateTime = ?
@@ -86,9 +85,9 @@ func  (event Event)Update() error{
 		return err
 	}
 	defer stmt.Close()
-	_,err=stmt.Exec(event.Name, event.Description, event.Location, event.DateTime, event.ID)
+	_, err = stmt.Exec(event.Name, event.Description, event.Location, event.DateTime, event.ID)
 	return err
-	
+
 }
 
 func (event Event) Delete() error {
