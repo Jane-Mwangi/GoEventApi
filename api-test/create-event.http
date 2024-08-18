@@ -1,7 +1,6 @@
 POST http://localhost:8080/events
 Content-Type: application/json
-Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRlc3QxMUBnbWFpbC5jb20iLCJleHAiOjE3MjQwMDYzMDUsInVzZXJJZCI6NX0.-YJtmS9VdTJ69iAp2x_vi2MHrcb-56yjwwbwdSXfFXM
-
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRlc3QxMkBnbWFpbC5jb20iLCJleHAiOjE3MjQwMDg3NjQsInVzZXJJZCI6MX0.36-1JgTUBRlrEoe-C3rVKkuUw37_GtWT9YPeqK3rjFs
 {
   "name": "Test Event by jj",
   "description": "This is a test 123 event",
