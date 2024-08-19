@@ -25,7 +25,7 @@ func Authenticate(context *gin.Context) {
 	// 	token = strings.TrimPrefix(token, "Bearer ")
 	// }
 
-	// // Log the cleaned token for debugging
+	
 	// log.Println("Cleaned Authorization token:", token)
 
 	// Log the token to ensure it's being retrieved correctly
